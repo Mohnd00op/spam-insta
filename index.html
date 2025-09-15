@@ -1,517 +1,180 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أداة تحميل فيديوهات انستجرام</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-red: #dc2626;
-            --dark-red: #b91c1c;
-            --black: #000000;
-            --dark-gray: #111111;
-            --medium-gray: #222222;
-            --light-gray: #444444;
-            --white: #ffffff;
-            --off-white: #f5f5f5;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: var(--black);
-            color: var(--white);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(220, 38, 38, 0.1) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(220, 38, 38, 0.1) 0%, transparent 20%);
-        }
-        
-        header {
-            background-color: var(--black);
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            border-bottom: 2px solid var(--primary-red);
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
-        
-        .logo-icon {
-            width: 50px;
-            height: 50px;
-            background: var(--primary-red);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--white);
-            font-size: 24px;
-            transform: rotate(-5deg);
-        }
-        
-        .logo-text {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--white);
-        }
-        
-        .logo-text span {
-            color: var(--primary-red);
-        }
-        
-        .container {
-            max-width: 800px;
-            width: 100%;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-        }
-        
-        .download-card {
-            background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
-            border-radius: 16px;
-            padding: 2.5rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--light-gray);
-            margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .download-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary-red), var(--dark-red));
-        }
-        
-        .card-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        
-        .card-header h1 {
-            font-size: 1.8rem;
-            color: var(--primary-red);
-            margin-bottom: 0.5rem;
-        }
-        
-        .card-header p {
-            color: var(--off-white);
-            opacity: 0.8;
-        }
-        
-        .input-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .input-group label {
-            display: block;
-            margin-bottom: 0.75rem;
-            font-weight: 500;
-            color: var(--off-white);
-        }
-        
-        .url-input-container {
-            display: flex;
-            background-color: var(--dark-gray);
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid var(--light-gray);
-            transition: all 0.3s ease;
-        }
-        
-        .url-input-container:focus-within {
-            border-color: var(--primary-red);
-            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.3);
-        }
-        
-        .url-prefix {
-            padding: 0 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--medium-gray);
-            color: var(--off-white);
-            font-weight: 500;
-        }
-        
-        .url-input {
-            flex: 1;
-            padding: 1rem;
-            border: none;
-            background-color: transparent;
-            color: var(--white);
-            font-size: 1rem;
-        }
-        
-        .url-input:focus {
-            outline: none;
-        }
-        
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(90deg, var(--primary-red), var(--dark-red));
-            color: var(--white);
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(220, 38, 38, 0.4);
-        }
-        
-        .btn:active {
-            transform: translateY(0);
-        }
-        
-        .btn i {
-            margin-left: 8px;
-        }
-        
-        .result-container {
-            display: none;
-            margin-top: 2rem;
-            background-color: rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            border-radius: 10px;
-            padding: 1.5rem;
-            text-align: center;
-        }
-        
-        .result-container.success {
-            display: block;
-            background-color: rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-        }
-        
-        .result-container.error {
-            display: block;
-            background-color: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-        
-        .instructions {
-            background-color: var(--dark-gray);
-            border-radius: 16px;
-            padding: 2rem;
-            border: 1px solid var(--light-gray);
-        }
-        
-        .instructions h2 {
-            color: var(--primary-red);
-            margin-bottom: 1.5rem;
-            text-align: center;
-            font-size: 1.5rem;
-        }
-        
-        .steps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .step {
-            background-color: var(--medium-gray);
-            padding: 1.5rem;
-            border-radius: 12px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-        
-        .step:hover {
-            transform: translateY(-5px);
-        }
-        
-        .step-number {
-            width: 40px;
-            height: 40px;
-            background-color: var(--primary-red);
-            color: var(--white);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            font-weight: bold;
-        }
-        
-        .step h3 {
-            color: var(--white);
-            margin-bottom: 0.75rem;
-        }
-        
-        .step p {
-            color: var(--off-white);
-            opacity: 0.8;
-        }
-        
-        footer {
-            margin-top: auto;
-            background-color: var(--black);
-            padding: 2rem 1.5rem;
-            text-align: center;
-            border-top: 1px solid var(--light-gray);
-        }
-        
-        .footer-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .footer-content p {
-            color: var(--off-white);
-            opacity: 0.7;
-            margin-bottom: 1rem;
-        }
-        
-        .features {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin: 1.5rem 0;
-            flex-wrap: wrap;
-        }
-        
-        .feature {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--off-white);
-        }
-        
-        .feature i {
-            color: var(--primary-red);
-        }
-        
-        .copyright {
-            margin-top: 1.5rem;
-            color: var(--off-white);
-            opacity: 0.5;
-            font-size: 0.9rem;
-        }
-        
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .logo-text {
-                font-size: 1.5rem;
-            }
-            
-            .download-card {
-                padding: 1.5rem;
-            }
-            
-            .card-header h1 {
-                font-size: 1.5rem;
-            }
-            
-            .steps {
-                grid-template-columns: 1fr;
-            }
-            
-            .url-input-container {
-                flex-direction: column;
-            }
-            
-            .url-prefix {
-                padding: 0.5rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .logo-text {
-                font-size: 1.3rem;
-            }
-            
-            .container {
-                padding: 0 1rem;
-            }
-            
-            .download-card {
-                padding: 1.25rem;
-            }
-            
-            .card-header h1 {
-                font-size: 1.3rem;
-            }
-            
-            .btn {
-                padding: 0.875rem;
-                font-size: 1rem;
-            }
-            
-            .features {
-                flex-direction: column;
-                gap: 0.75rem;
-            }
-        }
-        
-        /* Animation */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>أداة تحميل فيديوهات انستجرام</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <div class="logo-icon">
-                <i class="fas fa-download"></i>
-            </div>
-            <div class="logo-text">تحميل <span>انستجرام</span></div>
-        </div>
-    </header>
-    
-    <div class="container">
-        <div class="download-card">
-            <div class="card-header">
-                <h1>أداة تحميل فيديوهات انستجرام</h1>
-                <p>قم بتحميل فيديوهات انستجرام بجودة عالية بسهولة وسرعة</p>
-            </div>
-            
-            <div class="input-group">
-                <label for="instagram-url">أدخل رابط فيديو انستجرام</label>
-                <div class="url-input-container">
-                    <div class="url-prefix">
-                        <i class="fas fa-link"></i>
-                    </div>
-                    <input type="text" id="instagram-url" class="url-input" placeholder="https://www.instagram.com/p/..." />
-                </div>
-            </div>
-            
-            <button class="btn pulse" onclick="processDownload()">
-                <i class="fas fa-download"></i> تحميل الفيديو الآن
-            </button>
-            
-            <div id="result-container" class="result-container">
-                <p id="result-message"></p>
-            </div>
-        </div>
-        
-        <div class="instructions">
-            <h2>كيفية استخدام الأداة</h2>
-            <div class="steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <h3>انسخ الرابط</h3>
-                    <p>افتح انستجرام وانسخ رابط الفيديو الذي تريد تحميله</p>
-                </div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <h3>الصق الرابط</h3>
-                    <p>الصق الرابط في الحقل المخصص بالأعلى</p>
-                </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <h3>اضغط تحميل</h3>
-                    <p>اضغط على زر التحميل لبدء عملية التحميل</p>
-                </div>
-                <div class="step">
-                    <div class="step-number">4</div>
-                    <h3>احفظ الفيديو</h3>
-                    <p>بعد اكتمال التحميل، احفظ الفيديو على جهازك</p>
-                </div>
-            </div>
-        </div>
+  <header>
+    <div class="logo">
+      <div class="logo-icon">
+        <i class="fas fa-download"></i>
+      </div>
+      <div class="logo-text">تحميل <span>انستجرام</span></div>
     </div>
-    
-    <footer>
-        <div class="footer-content">
-            <p>أسرع وأسهل طريقة لتحميل فيديوهات انستجرام بدون برامج</p>
-            
-            <div class="features">
-                <div class="feature">
-                    <i class="fas fa-bolt"></i>
-                    <span>سريع وسهل</span>
-                </div>
-                <div class="feature">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>آمن تمامًا</span>
-                </div>
-                <div class="feature">
-                    <i class="fas fa-thumbs-up"></i>
-                    <span>بدون تسجيل</span>
-                </div>
-            </div>
-            
-            <div class="copyright">
-                &copy; 2023 أداة تحميل فيديوهات انستجرام - جميع الحقوق محفوظة
-            </div>
-        </div>
-    </footer>
+  </header>
 
-    <script>
-        function processDownload() {
-            const urlInput = document.getElementById('instagram-url');
-            const resultContainer = document.getElementById('result-container');
-            const resultMessage = document.getElementById('result-message');
-            
-            // إخفاء أي رسائل سابقة
-            resultContainer.className = 'result-container';
-            
-            if (!urlInput.value) {
-                resultContainer.className = 'result-container error';
-                resultMessage.textContent = 'يجب إدخال رابط فيديو انستجرام أولاً';
-                return;
-            }
-            
-            if (!urlInput.value.includes('instagram.com')) {
-                resultContainer.className = 'result-container error';
-                resultMessage.textContent = 'الرجاء إدخال رابط انستجرام صحيح يبدأ بـ https://www.instagram.com';
-                return;
-            }
-            
-            // محاكاة عملية التحميل
-            resultContainer.className = 'result-container';
-            resultMessage.innerHTML = 'جاري معالجة طلبك... <i class="fas fa-spinner fa-spin"></i>';
-            resultContainer.style.display = 'block';
-            
-            // محاكاة الانتظار قبل إظهار نتيجة النجاح
-            setTimeout(() => {
-                resultContainer.className = 'result-container success';
-                resultMessage.innerHTML = 'تم تحميل الفيديو بنجاح! <i class="fas fa-check-circle"></i><br><br>' +
-                                         '<a href="#" style="color: #22c55e; text-decoration: underline;">انقر هنا لتنزيل الفيديو</a>';
-            }, 2000);
-        }
-        
-        // لتمكين الإدخال عند الضغط على Enter
-        document.getElementById('instagram-url').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                processDownload();
-            }
+  <div class="container">
+    <div class="download-card">
+      <div class="card-header">
+        <h1>أداة تحميل فيديوهات انستجرام</h1>
+        <p>قم بتحميل فيديوهات انستجرام بجودة عالية بسهولة وسرعة</p>
+      </div>
+
+      <div class="input-group">
+        <label for="instagram-url">أدخل رابط فيديو انستجرام</label>
+        <div class="url-input-container">
+          <div class="url-prefix">
+            <i class="fas fa-link"></i>
+          </div>
+          <input
+            type="text"
+            id="instagram-url"
+            class="url-input"
+            placeholder="https://www.instagram.com/p/..."
+          />
+        </div>
+      </div>
+
+      <button class="btn pulse" onclick="processDownload()">
+        <i class="fas fa-download"></i> تحميل الفيديو الآن
+      </button>
+
+      <div id="result-container" class="result-container"></div>
+    </div>
+
+    <div class="instructions">
+      <h2>كيفية استخدام الأداة</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>انسخ الرابط</h3>
+          <p>افتح انستجرام وانسخ رابط الفيديو الذي تريد تحميله</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>الصق الرابط</h3>
+          <p>الصق الرابط في الحقل المخصص بالأعلى</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>اضغط تحميل</h3>
+          <p>اضغط على زر التحميل لبدء عملية التحميل</p>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <h3>احفظ الفيديو</h3>
+          <p>بعد اكتمال التحميل، احفظ الفيديو على جهازك</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <p>أسرع وأسهل طريقة لتحميل فيديوهات انستجرام بدون برامج</p>
+
+      <div class="features">
+        <div class="feature">
+          <i class="fas fa-bolt"></i>
+          <span>سريع وسهل</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-shield-alt"></i>
+          <span>آمن تمامًا</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-thumbs-up"></i>
+          <span>بدون تسجيل</span>
+        </div>
+      </div>
+
+      <div class="copyright">
+        &copy; 2023 أداة تحميل فيديوهات انستجرام - جميع الحقوق محفوظة
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    async function processDownload() {
+      const urlInput = document.getElementById("instagram-url");
+      const resultContainer = document.getElementById("result-container");
+
+      resultContainer.className = "result-container";
+      resultContainer.style.display = "block";
+
+      if (!urlInput.value) {
+        resultContainer.className = "result-container error";
+        resultContainer.innerHTML = "يجب إدخال رابط فيديو انستجرام أولاً";
+        return;
+      }
+
+      if (!urlInput.value.includes("instagram.com")) {
+        resultContainer.className = "result-container error";
+        resultContainer.innerHTML =
+          "الرجاء إدخال رابط انستجرام صحيح يبدأ بـ https://www.instagram.com";
+        return;
+      }
+
+      resultContainer.innerHTML =
+        'جاري معالجة طلبك... <i class="fas fa-spinner fa-spin"></i>';
+
+      try {
+        // هنا يجب تعديل الرابط إلى رابط الخادم الخاص بك
+        const response = await fetch("/download", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: urlInput.value }),
         });
-    </script>
+
+        const data = await response.json();
+
+        if (response.ok) {
+          if (data.results && data.results.length > 0) {
+            let html = "";
+            data.results.forEach((item, index) => {
+              html += `
+                <div style="margin-bottom: 20px; border-bottom: 1px solid #444; padding-bottom: 15px;">
+                  <img src="${item.imgSrc}" alt="صورة الفيديو" style="max-width: 100%; border-radius: 10px; margin-bottom: 10px;" />
+                  <p><strong>الملف رقم ${index + 1}</strong></p>
+                  <p>👤 بواسطة: ${item.profileName}</p>
+                  <p>❤️ إعجابات: ${item.likes} | 💬 تعليقات: ${item.comments}</p>
+                  <p>الوصف: ${item.description}</p>
+                  <a href="${item.downloadLink}" target="_blank" style="color:#22c55e; text-decoration: underline; font-weight: bold;">تحميل الفيديو</a>
+                </div>
+              `;
+            });
+            resultContainer.className = "result-container success";
+            resultContainer.innerHTML = html;
+          } else {
+            resultContainer.className = "result-container error";
+            resultContainer.innerHTML = "لم يتم العثور على محتوى قابل للتحميل.";
+          }
+        } else {
+          resultContainer.className = "result-container error";
+          resultContainer.innerHTML = data.error || "حدث خطأ غير معروف";
+        }
+      } catch (error) {
+        resultContainer.className = "result-container error";
+        resultContainer.innerHTML =
+          "فشل الاتصال بالخادم. تأكد من تشغيل الخادم.";
+      }
+    }
+
+    // دعم الضغط على Enter لتحميل الفيديو
+    document
+      .getElementById("instagram-url")
+      .addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          processDownload();
+        }
+      });
+  </script>
 </body>
 </html>
